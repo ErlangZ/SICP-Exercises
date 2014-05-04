@@ -1,0 +1,82 @@
+% SCIP 1.13习题
+\documentclass{article}
+\usepackage{CJK}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\begin{document}
+\begin{CJK}{UTF8}{gkai}
+问题：
+
+$Fib(n)$是最接近$\phi^{n}/\sqrt{5}$的整数，其中$\phi=(1+\sqrt{5})/2$。 另外假设$\varphi=(1-\sqrt{5})/2$。使用递归和斐波那契数的定义来证明$Fib(n)=(\phi^{n}-\varphi^{n})/\sqrt{5}$
+
+答案：
+
+斐波那契数列的定义如下
+\[
+Fib(n) = 
+\begin{cases}
+	1, &\text{$n=1$}\\
+	1, &\text{$n=2$}\\
+	Fib(n-1) + Fib(n-2),  &\text{$n \ge 3$}
+\end{cases}
+\]
+
+这是一个递归关系，我们可以加一个恒等式 $Fib(n-1) = Fib(n-1)$。然后，将这个数列写成矩阵的形式。
+\[
+\begin{bmatrix}
+  Fib(n) \\ Fib(n-1)
+\end{bmatrix}
+  =
+\begin{bmatrix}
+  1 & 1 \\
+  1 & 0
+\end{bmatrix}
+\times
+\begin{bmatrix}
+  Fib(n-1) \\ Fib(n-2)
+\end{bmatrix}
+  =
+{\begin{bmatrix}
+  1 & 1 \\
+  1 & 0
+\end{bmatrix}}^{n-2}
+\times
+\begin{bmatrix}
+  Fib(2) \\ Fib(1)
+\end{bmatrix}
+\]
+矩阵$
+\mathbf{A} = 
+\begin{bmatrix}
+  1 & 1 \\
+  1 & 0
+\end{bmatrix}$实际上代表了斐波那契数列的迭代关系。
+\[
+\begin{bmatrix} Fib(n) \\ Fib(n-1) \end{bmatrix} = \mathbf{A}^{n-2} \times \begin{bmatrix} Fib(2) \\ Fib(1) \end{bmatrix} 
+\]
+
+我们可以求得这个矩阵的特征值$\lambda$，特征值的意思就是面对任何一个向量$\vec{x}$，都有$\mathbf{A}\vec{x}=\lambda\vec{x}$。继续化简，可得
+\[
+  (\mathbf{A}-\lambda) \times \vec{x} = \vec{0}
+\]
+\[
+  \begin{bmatrix}
+  1-\lambda & 1 \\
+  1 & -\lambda
+  \end{bmatrix} \vec{x} = \vec{0}
+\]
+这个关系必须对任何的$\vec{x}$都成立。则唯一的解释是$\begin{bmatrix} 1-\lambda & 1 \\ 1 & -\lambda \end{bmatrix}$是奇异矩阵,就是说$\begin{vmatrix}1-\lambda & 1 \\ 1 & -\lambda \end{vmatrix}=0$。
+可以得到$(1-\lambda)\times\lambda-1=0$，解得$\lambda_{1} = \frac{1+\sqrt{5}}{2}$和$\lambda_{2}=\frac{1-\sqrt{5}}{2}$。
+
+其实矩阵$\mathbf{A}$是可以被分解为$Q\Lambda Q^{-1}$的，这种分解被称为雅各布分解，$\Lambda$是$\mathbf{A}$的特征值矩阵，可以得到$\mathbf{A}^{n}=Q\Lambda^{n}Q^{-1}$。我们不清楚$Q$的具体取值，但是，我们可以确定在$\mathbf{A}^{n}$是$\lambda_1^{n}$和$\lambda_2^{n}$的线性组合。就是说，$Fib(n) = x_1 \times \lambda_1^{n} + x_2 \times \lambda_2^{n}$，再考虑$Fib(1)=1$、$Fib(2)=1$
+\[Fib(1) = x_1 \times \lambda_1 + x_2 \times \lambda_2 = 1\]
+\[Fib(2) = x_1 \times \lambda_1^{2} + x_2 \times \lambda_2^{2} = 1\]
+就是说
+\[
+\begin{bmatrix} \lambda_1 & \lambda_2 \\ \lambda_1^2 & \lambda_2^2\end{bmatrix}\begin{bmatrix} x_1 \\ x_2 \end{bmatrix} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}
+\]
+可以解得$x_1=\sqrt{5}/5$，$x_2=-\sqrt{5}/5$。
+
+OK！ 那么，我们就得到了\[Fib(n)=\frac{\phi^{n}-\varphi^{n}}{\sqrt{5}}\]
+\end{CJK}
+\end{document}
