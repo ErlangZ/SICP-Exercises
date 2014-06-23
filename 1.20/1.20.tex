@@ -1,0 +1,75 @@
+\documentclass{article}
+\usepackage{CJK}
+\begin{document}
+\begin{CJK}{UTF8}{gkai}
+\textbf{问题：}函数的计算过程当然应该独立于解释器使用的计算规则。例如，考虑上文中提到的GCD的计算过程。假设我们使用的是上文提到的“标准序”。请你使用“替换方法”来演示使用“标准序”计算(GCD 206 40)，指出哪些地方调用了reminder方法，一共调用了多少次？如果使用的是“应用序”呢？
+
+(define (gcd a b)
+   (if (= b 0)
+       a
+       (gcd b (reminder a b))))
+
+\textbf{使用“替换方法”计算标准序：}
+
+(GCD 206 40)
+(if (= 40 0)
+     206
+     (GCD 40 (reminder 206 40)))
+
+(GCD 40 (reminder 206 40))
+(if (= (reminder 206 40) 0) \textbf{计算一次} 
+    40
+    (GCD (reminder 206 40) (reminder 40 (reminder 206 40)))\\
+(if (= 6 0)
+    40
+    (GCD (reminder 206 40) (reminder 40 (reminder 206 40))))
+
+(GCD (reminder 206 40) (reminder 40 (reminder 206 40)))\\
+(if (= (reminder 40 (reminder 206 40)) 0) \textbf{计算两次}
+    (reminder 206 40)
+    (GCD (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40))))\\
+(if (= 4 0)
+    (reminder 206 40)
+    (GCD (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))))
+
+(GCD (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))) \\
+(if (= (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) 0) \textbf{计算四次}
+    (reminder 40 (reminder 206 40))
+    (GCD (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40))))))
+(if (= 2 0)
+    (reminder 40 (reminder 206 40))
+    (GCD (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40))))))
+
+(GCD (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))))\\
+(if (= (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))) 0) \textbf{计算七次}
+    (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))
+    (GCD (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))) (reminder (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))))))
+(if (= 0 0)
+    (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))
+    (GCD (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))) (reminder (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))))))
+
+(reminder (reminder 206 40) (reminder 40 (reminder 206 40))) \textbf{计算四次}
+
+得到结果：2，一共调用reminder了18次。
+
+
+\textbf{使用“应用序”来进行计算：}
+(GCD 206 40)
+
+(GCD 40 (reminder 206 40))
+
+(GCD 40 6)
+
+(GCD 6 (reminder 40 6))
+
+(GCD 6 4)
+
+(GCD 4 (reminder 6 4))
+
+(GCD 4 2)
+
+(GCD 2 (reminder 4 2))
+
+得到结果：2，一共调用了4次。
+\end{CJK}
+\end{document}

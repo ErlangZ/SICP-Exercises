@@ -1,1 +1,4 @@
 *.bak
+*/*.aux
+*/*.log
+*/*.synctex.gz
