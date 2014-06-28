@@ -1,75 +1,175 @@
-\documentclass{article}
+\documentclass[11pt, a4paper]{article}
+
 \usepackage{CJK}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    escapeinside={<@}{@>}
+}
+\lstset{style=mystyle}
+
 \begin{document}
 \begin{CJK}{UTF8}{gkai}
-\textbf{问题：}函数的计算过程当然应该独立于解释器使用的计算规则。例如，考虑上文中提到的GCD的计算过程。假设我们使用的是上文提到的“标准序”。请你使用“替换方法”来演示使用“标准序”计算(GCD 206 40)，指出哪些地方调用了reminder方法，一共调用了多少次？如果使用的是“应用序”呢？
+\textbf{问题：}函数的计算过程当然应该独立于解释器使用的计算规则。例如，考虑上文中提到的gcd的计算过程。假设我们使用的是上文提到的“标准序”。请你使用“替换方法”来演示使用“标准序”计算(gcd 206 40)，指出哪些地方调用了reminder方法，一共调用了多少次？如果使用的是“应用序”呢？
 
+\begin{lstlisting}[language=Lisp, caption=definination of GCD]
 (define (gcd a b)
    (if (= b 0)
        a
        (gcd b (reminder a b))))
+\end{lstlisting}
 
-\textbf{使用“替换方法”计算标准序：}
-
-(GCD 206 40)
-(if (= 40 0)
+\noindent\textbf{使用“替换方法”计算标准序：}
+\begin{lstlisting}[language=Lisp, caption=Zero]
+(gcd 206 40)
+(if <@\textcolor{red}{(= 40 0)}@>
      206
-     (GCD 40 (reminder 206 40)))
+     (gcd 40 (reminder 206 40)))
+\end{lstlisting}
 
-(GCD 40 (reminder 206 40))
-(if (= (reminder 206 40) 0) \textbf{计算一次} 
+\begin{lstlisting}[language=Lisp, caption=Once]
+(gcd 40 (reminder 206 40))
+
+(if (= <@\textcolor{red}{(reminder 206 40)}@> 0) 
     40
-    (GCD (reminder 206 40) (reminder 40 (reminder 206 40)))\\
+    (gcd (reminder 206 40) (reminder 40 (reminder 206 40)))
+
 (if (= 6 0)
     40
-    (GCD (reminder 206 40) (reminder 40 (reminder 206 40))))
+    (gcd (reminder 206 40) (reminder 40 (reminder 206 40))))
+\end{lstlisting}
 
-(GCD (reminder 206 40) (reminder 40 (reminder 206 40)))\\
-(if (= (reminder 40 (reminder 206 40)) 0) \textbf{计算两次}
+\begin{lstlisting}[language=Lisp, caption=Twice]
+(gcd (reminder 206 40) (reminder 40 (reminder 206 40)))
+
+(if (= <@\textcolor{red}{(reminder 40 (reminder 206 40))}@> 0) 
     (reminder 206 40)
-    (GCD (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40))))\\
+    (gcd (reminder 40 (reminder 206 40)) 
+         (reminder (reminder 206 40) 
+                   (reminder 40 (reminder 206 40))))
+
 (if (= 4 0)
     (reminder 206 40)
-    (GCD (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))))
+    (gcd (reminder 40 (reminder 206 40)) 
+         (reminder (reminder 206 40) 
+                   (reminder 40 (reminder 206 40)))))
+\end{lstlisting}
 
-(GCD (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))) \\
-(if (= (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) 0) \textbf{计算四次}
+\begin{lstlisting}[language=Lisp, caption=Four times]
+(gcd (reminder 40 (reminder 206 40)) 
+     (reminder (reminder 206 40) 
+               (reminder 40 (reminder 206 40)))) 
+
+(if (= <@\textcolor{red}{(reminder (reminder 206 40) 
+                 (reminder 40 (reminder 206 40)))}@> 0)
     (reminder 40 (reminder 206 40))
-    (GCD (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40))))))
+    (gcd (reminder (reminder 206 40) 
+                   (reminder 40 (reminder 206 40))) 
+         (reminder (reminder 40 (reminder 206 40)) 
+                   (reminder (reminder 206 40) 
+                             (reminder 40 
+                                       (reminder 206 40))))))
+
 (if (= 2 0)
     (reminder 40 (reminder 206 40))
-    (GCD (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40))))))
+    (gcd (reminder (reminder 206 40) 
+                   (reminder 40 (reminder 206 40))) 
+         (reminder (reminder 40 (reminder 206 40)) 
+                   (reminder (reminder 206 40) 
+                             (reminder 40 (reminder 206 40))))))
+\end{lstlisting}
 
-(GCD (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))))\\
-(if (= (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))) 0) \textbf{计算七次}
-    (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))
-    (GCD (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))) (reminder (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))))))
+\begin{lstlisting}[language=Lisp, caption=Seven times]
+(gcd (reminder (reminder 206 40) 
+               (reminder 40 (reminder 206 40))) 
+     (reminder (reminder 40 (reminder 206 40)) 
+               (reminder (reminder 206 40) 
+                         (reminder 40 (reminder 206 40)))))
+
+(if (= 0 <@\textcolor{red}{(reminder (reminder 40 (reminder 206 40))}@> 
+                 <@\textcolor{red}{(reminder (reminder 206 40)}@> 
+                         <@\textcolor{red}{(reminder 40 (reminder 206 40))))}@>)
+    (reminder (reminder 206 40) 
+              (reminder 40 (reminder 206 40)))
+    (gcd (reminder (reminder 40 (reminder 206 40)) 
+                   (reminder (reminder 206 40) 
+                             (reminder 40 (reminder 206 40)))) 
+         (reminder (reminder (reminder 206 40) 
+                             (reminder 40 (reminder 206 40))) 
+                   (reminder (reminder 40 (reminder 206 40)) 
+                             (reminder (reminder 206 40) 
+                                       (reminder 40 
+                                                (reminder 206 
+                                                          40
+                                                     )))))))
 (if (= 0 0)
-    (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))
-    (GCD (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))) (reminder (reminder (reminder 206 40) (reminder 40 (reminder 206 40))) (reminder (reminder 40 (reminder 206 40)) (reminder (reminder 206 40) (reminder 40 (reminder 206 40)))))))
+    (reminder (reminder 206 40) 
+              (reminder 40 (reminder 206 40)))
+    (gcd (reminder (reminder 40 (reminder 206 40)) 
+                   (reminder (reminder 206 40) 
+                             (reminder 40 (reminder 206 40)))) 
+         (reminder (reminder (reminder 206 40) 
+                             (reminder 40 (reminder 206 40))) 
+                   (reminder (reminder 40 (reminder 206 40)) 
+                             (reminder (reminder 206 40) 
+                                       (reminder 40 
+                                                 (reminder 206 
+                                                           40
+                                                       )))))))
+\end{lstlisting}
 
-(reminder (reminder 206 40) (reminder 40 (reminder 206 40))) \textbf{计算四次}
+\begin{lstlisting}[language=Lisp,caption=Four times]
+<@\textcolor{red}{(reminder (reminder 206 40) 
+          (reminder 40 (reminder 206 40)))}@>
 
-得到结果：2，一共调用reminder了18次。
+(reminder 6 (reminder 40 6))
 
+(reminder 6 4)
 
-\textbf{使用“应用序”来进行计算：}
-(GCD 206 40)
+2 
+\end{lstlisting}
+得到结果：2，一共调用reminder了18次。\newline
 
-(GCD 40 (reminder 206 40))
+\noindent\textbf{使用“应用序”来进行计算：}
+\begin{lstlisting}[language=Lisp]
+(gcd 206 40)
 
-(GCD 40 6)
+(gcd 40 <@\textcolor{red}{(reminder 206 40)}@>)
 
-(GCD 6 (reminder 40 6))
+(gcd 40 6)
 
-(GCD 6 4)
+(gcd 6 <@\textcolor{red}{(reminder 40 6)}@>)
 
-(GCD 4 (reminder 6 4))
+(gcd 6 4)
 
-(GCD 4 2)
+(gcd 4 <@\textcolor{red}{(reminder 6 4)}@>)
 
-(GCD 2 (reminder 4 2))
+(gcd 4 2)
 
+(gcd 2 <@\textcolor{red}{(reminder 4 2)}@>)
+\end{lstlisting}
 得到结果：2，一共调用了4次。
 \end{CJK}
 \end{document}
