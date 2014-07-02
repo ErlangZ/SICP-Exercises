@@ -44,13 +44,15 @@
 (define (prime?-slow n)
   (prime? step n))
 
+(display "Linear Check.\n")
+(timed-test-prime prime?-slow 1000000000000037)
+(timed-test-prime prime?-slow 1000000000000091)
+(timed-test-prime prime?-slow 1000000000000159)
 
+(display "Linear Check Skip Even Nuums.\n")
 (timed-test-prime prime?-fast 1000000000000037)
 (timed-test-prime prime?-fast 1000000000000091)
 (timed-test-prime prime?-fast 1000000000000159)
 
-(timed-test-prime prime?-slow 1000000000000037)
-(timed-test-prime prime?-slow 1000000000000091)
-(timed-test-prime prime?-slow 1000000000000159)
 
 ; 这两个版本之间倒是几乎有两倍的差异，可为什么我实现的版本，比原题目中给出的版本慢了一倍？
