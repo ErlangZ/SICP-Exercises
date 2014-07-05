@@ -5,7 +5,7 @@
 ; 计算它对n的n-1次幂。但是，在计算过程中，我们需要观察我们是否发现了一个解x，使得x^2同1对
 ; n共轭。可以证明，如果这种数存在，那么n肯定不是一个素数。 也可以证明，如果n是一个奇的合数
 ; ，那么比n小的数中，至少有一半，在以这种方式计算a^(n-1)的过程中，会发现"同1对n共轭的非奇
-; 异平方根"。这就是为什么，Miller-Rabin测试不能被蒙蔽。
+; 异平方根"。这就是为什么，Miller-Rabin测试不能被蒙蔽。 --平凡解实际上就是1和n-1
 
 ; 修改expmod过程，当它发现一个非奇异的平方根的时候，就发出一个信号（原文中建议返回0），再用
 ; 这个过程来进行费马测试。重新测试一下效果
@@ -13,15 +13,25 @@
 (define (square x)
   (* x x))
 
+(define (square-mod-with-check base m)
+  (let ((square-base (square base)))
+    (if (and (/= base 1) 
+             (/= base (- m 1)) 
+             (= 1 (remainder square-base m)))
+        0
+        square-base)))
+
+(define (/= x y)
+  (not (= x y)))
+
 (define (expmod base exp m)
   (cond ((= exp 0) 
          1)
-        ((and (= exp 2) (= (remainder (square base) m) 0)) 
-         0) 
         ((even? exp)
-         (remainder (square (expmod base (/ exp 2) m)) m))
+         (square-mod-with-check (expmod base (/ exp 2) m) m))
         (else
          (remainder (* base (expmod base (- exp 1) m)) m))))
+
 
 (define (fermat-test n) ; 为了说明这个方法的作用，检测[2,n)的所有数
   (foldr (lambda (x y) (and x y))
@@ -29,9 +39,9 @@
          (map (lambda (a) (= (expmod a (- n 1) n) 1))
               (range 2 (- n 1)))))
 
-(fermat-test 2)
-(fermat-test 3)
-(fermat-test 4)
+;(fermat-test 2)
+;(fermat-test 3)
+;(fermat-test 4)
 (fermat-test 5)
 (fermat-test 6)
 (fermat-test 17)
