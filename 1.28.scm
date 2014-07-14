@@ -14,12 +14,12 @@
   (* x x))
 
 (define (square-mod-with-check base m)
-  (let ((square-base (square base)))
+  (let ((square-base-remainder (remainder (square base) m)))
     (if (and (/= base 1) 
              (/= base (- m 1)) 
-             (= 1 (remainder square-base m)))
+             (= 1 square-base-remainder))
         0
-        square-base)))
+        square-base-remainder)))
 
 (define (/= x y)
   (not (= x y)))
@@ -39,9 +39,9 @@
          (map (lambda (a) (= (expmod a (- n 1) n) 1))
               (range 2 (- n 1)))))
 
-;(fermat-test 2)
-;(fermat-test 3)
-;(fermat-test 4)
+(fermat-test 2)
+(fermat-test 3)
+(fermat-test 4)
 (fermat-test 5)
 (fermat-test 6)
 (fermat-test 17)

@@ -1,0 +1,29 @@
+% -*- coding:utf-8 -*-
+\documentclass[UTF8]{ctexart}
+\usepackage{tikz}
+\begin{document}
+问题： Simpson法则是一种比上文提到的方法更为精确的数值积分方法。使用Simpson法则，函数f从a到b的积分可以有如下
+表示$$ \frac{h}{3}[y_0+4y_1+2y_2+4y_3+2y_4+\cdots+2y_{n-2}+4y_{n-1}+y_n]$$这里，$h=(b-a)/n$ 对任意偶数n，$y
+_k=f(a+kh)$如果我们增加n，就可以增加计算结果的精度。
+
+请定义一个过程，将$f,a,b$和n作为参数，使用Simpson法则，返回相应的积分结果。用这个程序计算一下，cube函数从0到
+1的积分结果（n分别取100和1000，分别看看他们的结果有什么差别）。
+
+回答：首先来探讨一下数值积分的计算方法，原文中使用了$$\int_{a}^{b}f=[f(a+\frac{dx}{2})+f(a+dx+\frac{dx}{2})+f(a+2dx+\frac{dx}{2}+\cdots)]dx$$的方法。这种方法是用“矩形”面积的和来逼近函数的积分值。
+\begin{center}
+\begin{tikzpicture}[domain=0:2.8, scale=2]
+\draw[->] (-0.4,0) -- (3.2,0) node[below] {$x$};
+\draw[->] (0,-0.4) -- (0,2.2) node[above] {$f(x)$};
+\draw[color=black] plot(\x,{\x-(1/6)*(\x)^3}) node[right]{$f(x)=x-\frac{1}{6}x^3$};
+\fill[red!5,domain=0:2] (0,0) -- plot(\x, {\x-(1/6)*(\x)^3}) -- (0,0);
+\fill[red!5,domain=0:2] (0,0) -- (2,0) --(2, 2-4/3)-- (0,0);
+
+\foreach \x/\n in {0/0, 0.5/1, 1/2, 1.5/3, 2/4} {
+\draw[color=blue] (\x,0)--(\x,{\x-(1/6)*\x^3});
+\draw (\x,0) node[below] {$x_\n$};
+\node (p2) at (1,3) {\begin{rotate}{90}\Large{\}}\end{rotate}};
+
+};
+\end{tikzpicture}
+\end{center}
+\end{document}
