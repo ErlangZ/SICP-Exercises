@@ -76,4 +76,67 @@
               skip-one)))
 (appro-pi 1000);得到3.141749705738071...
 
-; 这题
+; 这题还要求使用递归再设计一次product
+(define (product-recursive f a b next)
+  (if (> a b)
+      1
+      (* (f a) (product-recursive f (next a) b next))))
+(product-recursive identity 1 5 inc)
+;/////////////////////////////////1.32///////////////////////////////////
+; 可以看到sum和product实际上是一种更为一般的符号accumulate的推广
+; (accumulate combiner null-value term a next b)
+; combiner 实际上如何处理两个term, sum符号里combiner是+,product符号里是*
+; null-value 是指定无值计算时候值，sum符号里null-value是0，product符号里是1
+; term相当于f，a是下界，b是上界，next是如何将一个值skip到下一个值
+; 注：drracket里没有定义accumulate，需要定义一个
+(define (accumulate combiner null-value term a b next)
+  (if (> a b)
+      null-value
+      (combiner (term a) (accumulate combiner null-value term (next a) b next))))
+;用accumulate定义一个新的sum、product
+(define (sum-new f a b next)
+  (accumulate + 0 f a b next))
+(define (product-new f a b next)
+  (accumulate * 1 f a b next))
+;检测1+2+3=6和1*2..*5=120
+(sum-new identity 1 3 inc)
+(product-new identity 1 5 inc)
+
+; 定义一个线性迭代版本的accumulate
+(define (accumulate-new combiner null-value term a b next)
+  (define (accumulate-new-iter combiner result term a b next)
+    (if (> a b)
+        result
+        (accumulate-new-iter combiner 
+                             (combiner result (term a)) 
+                             term (next a) b next)))
+  (accumulate-new-iter combiner null-value term a b next))
+
+(accumulate-new * 1 identity 1 5 inc)
+(accumulate-new + 0 identity 1 3 inc)
+
+;//////////////////////////////////1.33/////////////////////////////////////
+; 如果引入一个filter符号，可以实现一个filtered-accumulate，只过滤[a,b)中某些特定的值
+(define (filtered-accumulate combiner null-value term a b next filter)
+  (if (> a b)
+      null-value
+      (combiner (if (filter a) (term a) null-value)
+                (filtered-accumulate combiner null-value 
+                                   term (next a) b next filter))))
+; a.原题中要求计算a到b的素数平方和，我们计算1..10的奇数平方和吧
+; 1+3*3+5*5+7*7+9*9=1+9+25+49+81=165
+(filtered-accumulate + 0 square 1 10 inc odd?)
+; b.比n小的同n互素的所有数的积
+(define (gcd a b)
+  (if (= b 0)
+      a
+      (gcd b (remainder a b))))
+
+(define (relatively-prime-product n)
+  (define (relatively-prime? x)
+    (= (gcd n x) 1))
+  (filtered-accumulate * 1 identity 1 n inc relatively-prime?))
+;n=7 1*2*3*4*5*6=720
+(relatively-prime-product 7)
+;n=6 1*5=5
+(relatively-prime-product 6)
