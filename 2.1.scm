@@ -12,34 +12,33 @@
 (provide denom)
 
 (define (gcd d r)
-  (if (= r 0) 
-      d 
-      (gcd r (modulo d r))))
+  (if (= r 0) d
+      (gcd r (remainder d r))))
 
-(define (reduce-left op init ls) 
-  (if (null? ls)
-      init
-      (op (car ls) 
-          (reduce-left 
-           op init 
-           (cdr ls)))))
+(gcd -2 3) ; = 1
+(gcd 2 -3) ; = -1
+(gcd -2 -6) ; = -2
+(gcd -2 -3) ; = -1
+(gcd 2 3) ; = 1
 
+;@brief： 返回一个数的相反数
+;@param x -一个自然数
+(define (negative x) (- x))
+
+; 从题目中的意思可以看出，分子可以是负数，分母就一定得是正数
+; @brief: 给出一对分子和分母，返回一个分母是正数的有理数,并且化简成最简形式
 (define (make-rat numerator denominator)
-  (let ((divisor (abs 
-                  (gcd numerator 
-                       denominator)))
-        (signal (reduce-left
-                 * 
-                 1 
-                 (map 
-                    (lambda (x) (cond ((> x 0) 1)
-                                      ((= x 0) 0)
-                                      ((< x 0) -1)))
-                    (list numerator denominator)))))
-    (cons (* signal (/ (abs numerator) 
-                       (if (= 0 divisor) 1 divisor)))
-          (/ (abs denominator) 
-             (if (= 0 divisor) 1 divisor)))))
+  (let ((GCD (gcd numerator denominator)))
+    (if (< (/ denominator GCD) 0)
+        (cons (negative (/ numerator GCD))
+              (negative (/ denominator GCD)))
+        (cons (/ numerator GCD) 
+              (/ denominator GCD)))))
+
+(make-rat 2 -4) ; -1/2
+(make-rat -2 -4) ; 1/2
+(make-rat 2 4) ; 1/2
+(make-rat -2 4) ; -1/2
 
 (define (numer rat)
   (car rat))

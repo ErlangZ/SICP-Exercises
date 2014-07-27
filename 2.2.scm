@@ -31,13 +31,10 @@
               (avg (y-point(start-segment seg)) (y-point(end-segment seg)))))
 
 (define (avg rat1 rat2)
-  (make-rat 
-   (+ (*
-       (denom rat2) 
-       (numer rat1))
-      (*
-       (denom rat1)
-       (numer rat2)))
-   (* 2 
-      (denom rat1) 
-      (denom rat2))))
+  (mul-rat (add-rat rat1 rat2)
+           (make-rat 1 2)))
+
+(print-point 
+(mid-segment (make-segment (make-point (make-rat 1 1) (make-rat 2 1))
+                           (make-point (make-rat 2 1) (make-rat 3 1)))))
+;-------------------------------------------------------------------- 1.5 2.5
