@@ -4,7 +4,7 @@
   (if (null? ls)
       ls
       (append (reverse (cdr ls))
-              (list (car ls)))))
+              (cons (car ls) '()))))
 
 ;使用迭代过程
 (define (reverse-iter ls)
